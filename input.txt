@@ -1,0 +1,6 @@
+Consider a triangular mesh representing the surface of a sphere, see Fig-
+ure 1a. A spherical mesh is called valid, if and only if each edge is shared by
+exactly two triangles. Conversely, when the spherical mesh contains edges
+that are shared by only one triangle, then it is called a non-valid mesh.
+Figure 1b shows a non-valid mesh; non-valid meshes have holes, as the one
+shown by the red arrow.
