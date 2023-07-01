@@ -1,6 +1,6 @@
 d2l-线性神经网络
 
-3.1 线性回归
+### 3.1 线性回归
 
 **仿射变换（affine transformation）**：通过加权和对特征进行特征变化进行线性变换，并通过偏置项来进行平移（translation）。
 
@@ -55,5 +55,28 @@ $$
 
 
 
-3.2 面向对象的设计思想实现线性神经网络（Object-Oriented Design for Implementation）
+### 3.2 面向对象的设计思想实现线性神经网络（Object-Oriented Design for Implementation）
+
+### 3.3 构造回归的数据（Synthetic Regression Data）
+
+主要讲了如何构造以及加载数据，
+
+```python
+@d2l.add_to_class(d2l.DataModule)  #@save
+def get_tensorloader(self, tensors, train, indices=slice(0, None)):
+    tensors = tuple(a[indices] for a in tensors)
+    dataset = torch.utils.data.TensorDataset(*tensors)
+    # torch.utils.data.DataLoader represents a Python iterable over a dataset
+    return torch.utils.data.DataLoader(dataset, self.batch_size,
+                                       shuffle=train)
+
+@d2l.add_to_class(SyntheticRegressionData)  #@save
+def get_dataloader(self, train):
+    i = slice(0, self.num_train) if train else slice(self.num_train, None)
+    return self.get_tensorloader((self.X, self.y), train, i)
+```
+
+用了一些torch的工具，感觉增加了理解难度。可能在之后使用的时候才有感觉。
+
+查了一下需要使用iter的原因，是因为iter这一类更加节省空间，并且按需生成数据，在处理大数据时非常有用。
 
