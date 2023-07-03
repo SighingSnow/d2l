@@ -57,6 +57,8 @@ $$
 
 ### 3.2 面向对象的设计思想实现线性神经网络（Object-Oriented Design for Implementation）
 
+主要是学习架构。包含3个对象，`Module`包含模型、损失函数以及优化的方法，`DataModule`提供了数据加载的相关方法，而`Trainr`类包括了这两个因素。
+
 ### 3.3 构造回归的数据（Synthetic Regression Data）
 
 主要讲了如何构造以及加载数据，
