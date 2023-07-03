@@ -46,4 +46,7 @@ class Trainer(d2l.HyperParameters):
         if self.val_dataloader is None :
             return 
         self.model.eval()
-        
+        for batch in self.val_dataloader:
+            with torch.no_grad():
+                self.model.validation_step(self.prepare_batch)
+            self.val_batch_idx += 1

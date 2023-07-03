@@ -10,4 +10,4 @@ class SGD(d2l.HyperParameters):
     def zero_grad(self):
         for param in self.params:
             if param.grad is not None:
-                param.grad_zero()
+                param.grad.zero_()

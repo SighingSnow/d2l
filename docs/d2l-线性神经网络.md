@@ -1,4 +1,4 @@
-d2l-线性神经网络
+d2l-线性神经网络en.md
 
 ### 3.1 线性回归
 
@@ -82,3 +82,47 @@ def get_dataloader(self, train):
 
 查了一下需要使用iter的原因，是因为iter这一类更加节省空间，并且按需生成数据，在处理大数据时非常有用。
 
+### 3.4 Linear Regression from scratch
+![](../pic/3-4.png)
+
+1. What would happen if we were to initialize the weights to zero. Would the algorithm still work? What if we initialized the parameters with variance 1000 rather than 0.01 ?
+    > Yes, it still work. Then the predicted result will larger than real. If we increase the epochs number, than we will get a more precise result.
+
+2. Assume that you are Georg Simon Ohm trying to come up with a model for resistors that relate voltage and current. Can you use automatic differentiation to learn the parameters of your model?
+    > $$I = V / R$$
+
+3. Derivate it.
+   $$
+    
+   $$
+
+4. What are the problems you might encounter if you wanted to compute the second derivatives of the loss? How would you fix them?
+    > * Second derivatives will be zero.
+    > * hello world
+
+5. Why is the reshape method needed in the loss function?
+
+6. Experiment using different learning rates to find out how quickly the loss function value drops. Can you reduce the error by increasing the number of epochs of training?
+   The loss will get down faster. But we cant reach minima in 3 epochs. As Figure 1 shows.
+   ![lr=0.05,epochs=3](../pic/en-3-4-1.png) 
+   <center>Fig 1. lr = 0.05 epochs = 3</center>
+   ![lr=0.05,epochs=5](../pic/en-3-4-2.png)
+   <center>Fig 2. lr = 0.05 epochs = 5</center>
+   
+7. If the number of examples cannot be divided by the batch size, what happens to data_iter at the end of an epoch?
+    We have 2 choices, one is to not use these examples. The other is to use the remain with indices[i:num_examples]
+
+8. Try implementing a different loss function, such as the absolute value loss (y_hat - d2l.reshape(y, y_hat.shape)).abs().sum().
+   1. Check what happens for regular data.
+   We get a bigger loss.
+   ![abs loss](../pic/en-3-4-3.png)
+   <center>Fig 3. abs loss</center>
+   2. Check whether there is a difference in behavior if you actively perturb some entries of y, such as $y_5=10000$.
+    I cannot draw some conclution.
+    ![y5=10000](../pic/en-3-4-4.png)
+    <center>Fig 4. y5 = 10000</center>
+   3. Can you think of a cheap solution for combining the best aspects of squared loss and absolute value loss? Hint: how can you avoid really large gradient values?
+    I divide the abs result with a constant or maybe we can just sqrt it.(I dont know whether it's right.)
+
+9.  Why do we need to reshuffle the dataset? Can you design a case where a maliciously dataset would break the optimization algorithm otherwise?
+    Because in examples, we have examples that are arranged together for some order. They may be the same value or following the rule that each add one from previous one. So after shuffle, we can get a more accurate variance and lower the bias.

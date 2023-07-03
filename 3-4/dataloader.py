@@ -10,5 +10,5 @@ class SyntheticRegressionData(d2l.DataModule):
         self.X = torch.randn(n,len(w))
         noise = torch.randn(n,1)*noise
         self.y = torch.matmul(self.X,w.reshape((-1,1)))+b+noise
-
-    
+        # for exercise 8
+        self.y[5] = 10000
