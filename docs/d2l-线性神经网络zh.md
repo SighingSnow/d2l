@@ -35,3 +35,5 @@ for epoch in range(num_epochs):
         print(f'epoch {epoch + 1}, loss {float(train_l.mean()):f}')
 ```
 
+### 3-3 线性回归的简洁实现
+主要是讲了人工智能框架的使用方法，看完英文版的3-4这里非常好理解。
