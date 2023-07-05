@@ -26,7 +26,7 @@ class SGD(HyperParameters):
                 param.grad.zero_()
 
 def get_dataloader_workers():
-    return 0
+    return 4
 
 def load_data_fashion_mnist(batch_size,resize=None,download=False):
     trans = [transforms.ToTensor()]
