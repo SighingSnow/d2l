@@ -2,7 +2,7 @@ from model import *
 from dataloader import *
 from trainer import *
 from d2l import torch as d2l
-model = LinearRegressionScratch(2,lr=0.05)
+model = LinearRegressionScratch(2,lr=0.01)
 data = d2l.SyntheticRegressionData(w=torch.tensor([2,-3.4]),b = 4.2)
 trainer = d2l.Trainer(max_epochs=3)
 trainer.fit(model,data)

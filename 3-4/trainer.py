@@ -34,14 +34,23 @@ class Trainer(d2l.HyperParameters):
     def fit_epoch(self):
         self.model.train() # how to train
         for batch in self.train_dataloader:
+            # forward
             loss = self.model.training_step(self.prepare_batch(batch))
+            # 梯度清零
             self.optim.zero_grad()
             # 上下文管理器，确保在推理过程中不会进行梯度计算
-            with torch.no_grad():
-                loss.backward()
-                if self.gradient_clip_val > 0:
-                    self.clip_gradients(self.gradient_clip_val,self.model)
-                self.optim.step()
+            # with torch.no_grad():
+            #     # 反向传播
+            #     loss.backward()
+            #     # 梯度裁剪
+            #     if self.gradient_clip_val > 0:
+            #         self.clip_gradients(self.gradient_clip_val,self.model)
+            #     self.optim.step()
+            loss.backward()
+            # 梯度裁剪
+            if self.gradient_clip_val > 0:
+                self.clip_gradients(self.gradient_clip_val,self.model)
+            self.optim.step()
             self.train_batch_idx += 1
         if self.val_dataloader is None :
             return 
