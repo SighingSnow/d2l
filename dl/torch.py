@@ -2,14 +2,23 @@ import time
 import torch
 import torchvision
 import numpy as np
+import inspect
 from torchvision import transforms
 
+
+
+# Save hyper paramters
 class HyperParameters:
-    def __init__():
+    def save_hyperparameters(self,ignore=[]):
         raise NotImplemented
     
-    def save_hyperparameters():
-        raise NotImplemented
+    def save_hyperparameters(self,ignore=[]):
+        frame = inspect.currentframe.getargvalues(frame)
+        _, _, _, local_vars = inspect.getargvalues(frame)
+        self.hparams = {k:v for k,v in local_vars.items()
+                        if k not in set(ignore+['self']) and not k.startswith('_')}
+        for k, v in self.hparams.items():
+            setattr(self,k,v)
 
 # optimers
 class SGD(HyperParameters):

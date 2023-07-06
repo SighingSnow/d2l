@@ -128,3 +128,25 @@ def get_dataloader(self, train):
 
 9.  Why do we need to reshuffle the dataset? Can you design a case where a maliciously dataset would break the optimization algorithm otherwise?
     > Because in examples, we have examples that are arranged together for some order. They may be the same value or following the rule that each add one from previous one. So after shuffle, we can get a more accurate variance and lower the bias.
+
+### 3.5 Concise Implementation of Linear Regression
+
+* Lazy Linear
+* torch operations
+
+1. How would you need to change the learning rate if you replace the aggregate loss over the minibatch with an average over the loss on the minibatch?
+   > It's asking about how do you use MSELoss( none | mean | sum ).
+2. Review the framework documentation to see which loss functions are provided. In particular, replace the squared loss with Huber’s robust loss function. That is, use the loss function
+    
+<center> 
+
+![](../pic/en-3-5-1.png) 
+
+</center>
+
+    > torch.nn.SmoothLoss()
+
+
+3. How do you access the gradient of the weights of the model?
+   > In ./train.py call W.grad is None. Oops.
+   > So I add a method `get_w_grad` in model.py
