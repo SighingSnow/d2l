@@ -166,4 +166,6 @@ Mainly talks about fit and overfit.
 > 4. Keeping all else equal, more data almost always leads to better generalization;
 > 5. This entire talk of generalization is all predicated on the IID assumption. If we relax this assumption, allowing for distributions to shift between the train and testing periods, then we cannot say anything about generalization absent a further (perhaps milder) assumption.
 
+The questions in 3.6 is about some tricks in training and validation.
+
 ### 3.7 Weight Decay
