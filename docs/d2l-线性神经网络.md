@@ -150,3 +150,20 @@ def get_dataloader(self, train):
 3. How do you access the gradient of the weights of the model?
    > In ./train.py call W.grad is None. Oops.
    > So I add a method `get_w_grad` in model.py
+
+### 3.6 Generalization
+Mainly talks about fit and overfit.
+
+> In the **standard supervised learning** setting, we assume that the training data and the test data are drawn **independently** from **identical** distributions. 
+
+3.6.2 talks about underfitting and overfitting, relating to polynomial curve, datasets size and model selection.
+
+**3.6.3 cross validation** with no enough validation set, we divide training sets to k parts. Then we train and do validation k times. Each time, we do train on k-1 sets and do validation on the remain set.
+
+> 1. Use validation sets (or -fold cross-validation) for model selection;
+> 2. More complex models often require more data;
+> 3. Relevant notions of complexity include both the number of parameters and the range of values that they are allowed to take;
+> 4. Keeping all else equal, more data almost always leads to better generalization;
+> 5. This entire talk of generalization is all predicated on the IID assumption. If we relax this assumption, allowing for distributions to shift between the train and testing periods, then we cannot say anything about generalization absent a further (perhaps milder) assumption.
+
+### 3.7 Weight Decay
