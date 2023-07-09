@@ -14,6 +14,22 @@ MLP(Multi-Layer Perception)多层感知机
 
 </center>
 
+### 4.3 多层感知机的简洁实现
+调用了torch的简洁接口实现了一个只有2层的多层感知机。
+如在4.2中使用的是如下代码进行参数设置
+```python
+W1 = nn.Parameters(torch.randn(num_inputs,num_hiddens,requires_grad=True)*0.01)
+```
+而在4.3节中，可以直接使用torch.nn实现整个网络的构建
+```python
+torch.nn.Sequential(
+    nn.Flatten()
+    nn.Linear()
+    nn.ReLU()
+    nn.Linear()
+)
+```
+
 **4.1 习题**
 1. 计算pReLU激活函数的导数。
 > $$pReLU = max(0,x) + a * min(0,x)$$

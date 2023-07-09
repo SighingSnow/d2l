@@ -20,6 +20,13 @@ class HyperParameters:
         for k, v in self.hparams.items():
             setattr(self,k,v)
 
+# loss
+def MSELoss(y_hat,y):
+    return (y_hat-y) ** 2 / 2
+
+def crossEntryLoss(y_hat,y):
+    return -torch.log(y_hat[range(len(y_hat)),y])
+
 # optimers
 class SGD(HyperParameters):
     def __init__(self,params,lr):
