@@ -6,7 +6,7 @@ import inspect
 from torchvision import transforms
 from d2l import torch as d2l
 from IPython import display
-
+from dl import torch as dl
 # Save hyper paramters
 class HyperParameters:
     def save_hyperparameters(self,ignore=[]):
@@ -19,6 +19,76 @@ class HyperParameters:
                         if k not in set(ignore+['self']) and not k.startswith('_')}
         for k, v in self.hparams.items():
             setattr(self,k,v)
+
+# models
+class Trainer(d2l.HyperParameters):
+    def __init__(self,max_epochs,num_gpus=0,gradient_clip_val=0):
+        self.save_hyperparameters()
+        assert num_gpus == 0, 'No GPU support yet'
+    
+    def prepare_data(self,data):
+        self.train_dataloader = data.train_dataloader()
+        self.val_dataloader = data.val_dataloader()
+        self.num_train_batches = len(self.train_dataloader)
+        self.num_val_batches = (len(self.val_dataloader) if self.val_dataloader is not None else 0)
+    
+    def prepare_model(self,model):
+        model.trainer = self
+        model.board.xlim = [0,self.max_epochs]
+        # if self.num_gpus:
+        #     raise NotImplementedError
+        self.model = model
+    
+    def prepare_batch(self,batch):
+        # if self.gpus:
+        #     raise NotImplemented
+        return batch
+
+    def fit_epoch(self):
+        self.model.train() # enable dropout and batch normalization
+        for batch in self.train_dataloader:
+            loss = self.model.training_step(self.prepare_batch(batch))
+            self.optim.zero_grad()
+            with torch.no_grad():
+                loss.backward()
+                if self.gradient_clip_val > 0:
+                    raise NotImplemented
+                self.optim.step()
+            self.train_batch_idx += 1
+        if self.val_dataloader is None:
+            return 
+        self.model.eval() # disable dropout and batch normalization
+        for batch in self.val_dataloader:
+            with torch.no_grad():
+                self.model.validation_step(self.prepare_batch(batch))
+            self.val_batch_idx+=1
+    
+    def fit(self,model,data):
+        self.prepare_data(data)
+        self.prepare_model(model)
+        self.optim = model.configure_optimizers()
+        self.epoch = 0
+        self.train_batch_idx = 0
+        self.val_batch_idx = 0
+        for self.epoch in range(self.max_epochs):
+            self.fit_epoch()
+    
+class LinearRegressScratch(d2l.Module):
+    def __init__(self,num_inputs,lr,sigma=0.01):
+        super().__init__()
+        self.save_hyperparameters() # equals self.num_inputs = num_inputs etc.
+        self.w = torch.normal(0,sigma,(num_inputs,1),requires_grad=True)
+        self.b = torch.zeros(1,requires_grad=True)
+
+    def forward(self,X):
+        return X@self.w+self.b
+    
+    def loss(self,y_hat,y):
+        l = (y_hat - y) ** 2 / 2
+        return l.mean()
+    
+    def configure_optimizers(self):
+        return torch.optim.SGD([self.w,self.b],lr=self.lr)
 
 # loss
 def MSELoss(y_hat,y):
@@ -54,7 +124,7 @@ def load_data_fashion_mnist(batch_size,resize=None,download=False):
     mnist_test = torchvision.datasets.FashionMNIST(root="../data",train=False,transform=trans,download=download)
     return (torch.utils.data.DataLoader(mnist_train,batch_size,shuffle=True,num_workers = get_dataloader_workers())),(torch.utils.data.DataLoader(mnist_test,batch_size,shuffle=True,num_workers = get_dataloader_workers()))
 
-def accuracy(y_hat,y):
+def accuracy(y_hat,y): # this is for classification not for some linear calculation
     if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
         y_hat = y_hat.argmax(axis=1)
     cmp = y_hat.type(y.dtype) == y
@@ -109,6 +179,9 @@ def predict_ch3(net,test_iter,n=6):
     )
 
 # utilities
+def l2_penalty(w):
+    return (w**2).sum() / 2;
+
 class Accumulator:
     def __init__(self,n):
         self.data = [0.0]*n

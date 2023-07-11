@@ -169,3 +169,38 @@ Mainly talks about fit and overfit.
 The questions in 3.6 is about some tricks in training and validation.
 
 ### 3.7 Weight Decay
+<center> lambda = 0</center>
+
+![](../pic/en-3-7-1.png)
+
+<center> lambda = 3</center>
+
+![](../pic/en-3-7-2.png)
+
+可以看到在使用权重衰减后，验证集收敛的更快。
+
+**3.7习题**
+1. Experiment with the value of in the estimation problem in this section. Plot training and validation accuracy as a function of . What do you observe?
+   > ![](../pic/en-3-7-3.png)
+   > lambda 数值并不是越大越好，取到某些数值如4、6可以获得较为符合的结果。
+
+2. Use a validation set to find the optimal value of $\lambda$. Is it really the optimal value? Does this matter?
+   > 这题给我整不会了。
+
+3. What would the update equations look like if instead of ${\| w \|}^2$ we used $\Sum_i|w_i}$ as our penalty of choice (regularization)?
+   > ```python
+   > def l1_penalty(w):
+   >    return w.sum().abs()
+   > ```
+
+4. We know that $\| w \| = 2w^Tw$. Can you find a similar equation for matrices (see the Frobenius norm in Section 2.3.11)?
+   > $$ {\| X \|}_F = \sqrt {\sum^m_{i=1} \sum^n_{j=1} x_{ij}^2 }$$
+   > ```python
+   > torch.norm(torch.ones(4,9))
+   > ```
+
+5. Review the relationship between training error and generalization error. In addition to weight decay, increased training, and the use of a model of suitable complexity, what other ways can you think of to deal with overfitting?
+   > 问还有什么办法解决overfitting，可以通过dropout或者激活函数降低过拟合的几率。
+
+6. In Bayesian statistics we use the product of prior and likelihood to arrive at a posterior via $ P(w|x) \propto P(x|w)P(w) $. How can you identify P(w) with regularization?
+   > I don't know the answer.
