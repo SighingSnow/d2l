@@ -49,6 +49,9 @@ torch.nn.Sequential(
 
 ![](../pic/zh-4-6-1.png)
 
+### 4.7 前向传播、反向传播和计算图
+主要讲的是数学公式推导的一些过程。
+
 **4.1 习题**
 1. 计算pReLU激活函数的导数。
 > $$pReLU = max(0,x) + a * min(0,x)$$
@@ -184,3 +187,25 @@ torch.nn.Sequential(
 > 我觉得fox的回答非常好，也就是说暂退法应该放在激活函数之前还是之后。暂退法应该放在激活函数之后的原因是。激活函数激活后，可能部分神经元就会有梯度了，这就导致dropout失去作用了。
 
 7. 发明另一种用于在每一层注入随机噪声的技术，该技术不同于标准的暂退法技术。尝试开发一种在Fashion-MNIST数据集（对于固定架构）上性能优于暂退法的方法。
+
+**4.7习题**
+1. 假设一些标量函数$X$的输入$X$是nxm的矩阵。$f$相对于$X$的梯度维数是多少？(这里估计是机器翻译的，和英文版的意思都不一样了)
+   > nxm
+2. 向本节中描述的模型的隐藏层添加偏置项（不需要在正则化项中包含偏置项）。
+   1. 画出相应的计算图。
+   > ![](../pic/zh-4-7-1.png)
+   2. 推导正向和反向传播方程。
+   > 只需要再进行$b_1$和$b_2$的梯度即可。
+   > $$ \frac{\partial J}{\partial b_2} = \frac{\partial J}{\partial L} \frac{\partial L}{\partial l} \frac{\partial l}{\partial u} \frac{\partial u}{\partial b}, with \ u = o + b_2$$
+   > $$ \frac{\partial J}{\partial b_2} = \frac{\partial L}{\partial u}$$
+   > 接下来计算$b_1$的偏导
+   > $$\frac{\partial J}{\partial b_1} = \frac{\partial J}{\partial s} \frac{\partial s}{\partial b_1} + \frac{\partial J}{\partial L} \frac{\partial L}{\partial b_1} $$
+   > 显然$\frac{\partial s}{\partial b_1} = 0$，所以有
+   > $$ \frac{\partial J}{\partial b_1} = \frac{\partial J}{\partial L} \frac{\partial L}{\partial o} \frac{\partial o}{\partial h} \frac{\partial h}{\partial z}$$
+   > $$ \frac{\partial J}{\partial b_1} = \lambda {W_2}^T \frac{\partial l}{\partial o} \phi'(z)$$
+3. 计算本节所描述的模型，用于训练和预测的内存占用。
+   > 闹麻了，这个应该要看pytorch是怎么存储数据的。
+4. 假设想计算二阶导数。计算图发生了什么？预计计算需要多长时间？
+   > 计算图还需要存储一阶导数。
+5. 假设计算图对当前拥有的GPU来说太大了。请试着把它划分到多个GPU上。与小批量训练相比，有哪些优点和缺点？
+   > 个人觉得这样的训练方式，可以提高模型的准确性。弊端在于可能导致过拟合。
