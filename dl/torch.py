@@ -1,5 +1,6 @@
 import time
 import torch
+import random
 import torchvision
 import numpy as np
 import inspect
@@ -29,6 +30,35 @@ def read_time_machine():
     with open(d2l.download('time_machine'), 'r') as f:
         lines = f.readlines()
     return [re.sub('[^A-Za-z]+', ' ', line).strip().lower() for line in lines]
+
+def seq_data_iter_random(corpus,batch_size,num_steps):
+    corpus = corpus[random.randint(0,num_steps-1):] # random offset
+    num_subseqs = (len(corpus)-1) // num_steps 
+    initial_indices = list(range(0,num_subseqs*num_steps,num_steps))
+    random.shuffle(initial_indices)
+
+    def data(pos):
+        return corpus[pos:pos+num_steps]
+    
+    num_batches = num_subseqs // batch_size
+    for i in range(0,num_batches*batch_size,batch_size):
+        initial_indices_per_batch = initial_indices[i:i+batch_size]
+        X = [data(j) for j in initial_indices_per_batch]
+        Y = [data(j+1) for j in initial_indices_per_batch]
+        yield torch.tensor(X),torch.tensor(Y)
+
+def seq_data_iter_sequential(corpus,batch_size,num_steps):
+    offset = random.randint(0,num_steps-1)
+    num_tokens = ((len(corpus) - offset - 1) // batch_size) * batch_size
+    Xs = torch.tensor(corpus[offset:offset+num_tokens])
+    Ys = torch.tensor(corpus[offset+1:offset+num_tokens+1])
+    Xs,Ys = Xs.reshape(batch_size,-1),Ys.reshape(batch_size,-1)
+    num_batches = Xs.shape[1] // num_steps
+    for i in range(0,num_batches*batch_size,batch_size):
+        X = Xs[:,i:i+num_steps]
+        Y = Ys[:,i:i+num_steps]
+        yield X,Y
+
 
 # Save hyper paramters
 class HyperParameters:
@@ -149,6 +179,20 @@ class Vocab:
     @property
     def token_freqs(self):
         return self._token_freq
+
+class SeqDataLoader:
+    def __init__(self,batch_size,num_steps,use_random_iter,max_tokens):
+        if use_random_iter:
+            self.data_iter_fn = seq_data_iter_random
+        else:
+            self.data_iter_fn = seq_data_iter_sequential
+        tokens = tokenize(read_time_machine())
+        self.corpus = [token for line in tokens for token in line]
+        self.vocab = Vocab(self.corpus)
+        self.batch_size, self.num_steps = batch_size,num_steps
+    
+    def __iter__(self):
+        return self.data_iter_fn(self.corpus,self.batch_size,self.num_steps)
 
 # loss
 def MSELoss(y_hat,y):

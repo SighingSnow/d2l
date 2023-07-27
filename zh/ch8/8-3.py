@@ -68,7 +68,7 @@ class SeqDataLoader:
 
 
 myseq = list(range(35))
-for X,Y in seq_data_iter_random(myseq,batch_size=2,num_steps=5):
+for X,Y in dl.seq_data_iter_random(myseq,batch_size=2,num_steps=5):
     print('X: ',X,'\nY: ',Y)
 
 for X,Y in seq_data_iter_sequential(myseq,batch_size=2,num_steps=5):
