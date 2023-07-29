@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 
 import sys
 sys.path.append('..')
-from dl import torch as dl
+from dl import torch_zh as dl
 
 def evaluate_loss(net,data_iter,loss):
     metric = dl.Accumulator(2)

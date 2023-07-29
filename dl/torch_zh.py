@@ -9,7 +9,7 @@ import re
 from torchvision import transforms
 from d2l import torch as d2l
 from IPython import display
-from dl import torch as dl
+from dl import torch_zh as dl
 
 def count_corpus(tokens):
     if len(tokens) == 0 or isinstance(tokens[0],list):
@@ -30,6 +30,11 @@ def read_time_machine():
     with open(d2l.download('time_machine'), 'r') as f:
         lines = f.readlines()
     return [re.sub('[^A-Za-z]+', ' ', line).strip().lower() for line in lines]
+
+def load_data_time_machine(batch_size,num_steps,
+                           use_random_iter=False,max_tokens=10000):
+    data_iter = SeqDataLoader(batch_size,num_steps,use_random_iter,max_tokens)
+    return data_iter, data_iter.vocab    
 
 def seq_data_iter_random(corpus,batch_size,num_steps):
     corpus = corpus[random.randint(0,num_steps-1):] # random offset
@@ -167,6 +172,9 @@ class Vocab:
             return self.token_to_idx.get(tokens,self.unk)
         return [self.__getitem__(token) for token in tokens]
     
+    def __len__(self):
+        return len(self.idx_to_token)
+
     def to_tokens(self,indices):
         if not isinstance(indices,(tuple,list)):
             return self.idx_to_token[indices]

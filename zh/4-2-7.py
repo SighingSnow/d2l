@@ -4,7 +4,7 @@ from d2l import torch as d2l
 
 import sys
 sys.path.append("..")
-from dl import torch as dl
+from dl import torch_zh as dl
 
 batch_size = 256
 train_iter, test_iter = dl.load_data_fashion_mnist(batch_size)

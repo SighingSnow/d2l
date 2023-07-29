@@ -3,7 +3,7 @@ from torch import nn
 from d2l import torch as d2l
 import sys
 sys.path.append('..')
-from dl import torch as dl
+from dl import torch_zh as dl
 
 num_inputs,num_outputs,num_hiddens1,num_hiddens2 = 784,10,256,256
 dropout2,dropout1 = 0.5,0.2

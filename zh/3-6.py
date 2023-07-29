@@ -4,7 +4,7 @@ from d2l import torch as d2l
 
 import sys
 sys.path.append("..")
-from dl import torch as dl # my own dl package
+from dl import torch_zh as dl # my own dl package
 
 batch_size = 256
 # 加载
